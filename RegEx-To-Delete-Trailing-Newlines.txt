@@ -1,2 +1,9 @@
+Visual Studio:
+==============
 \r\s*\z$
 \n\s*\z$
+
+Visual Studio Code:
+===================
+\r\s*(?![\w\W])
+\n\s*(?![\w\W])
