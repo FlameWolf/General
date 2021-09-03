@@ -34,5 +34,5 @@
 	"prettier.useEditorConfig": false,
 	"prettier.useTabs": true,
 	"prettier.vueIndentScriptAndStyle": true,
-	"prettier.withNodeModules": true
+	"prettier.withNodeModules": false
 }
