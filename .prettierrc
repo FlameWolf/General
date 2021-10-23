@@ -14,6 +14,5 @@
 	"trailingComma": "none",
 	"useEditorConfig": false,
 	"useTabs": true,
-	"vueIndentScriptAndStyle": true,
-	"withNodeModules": true
+	"vueIndentScriptAndStyle": true
 }
