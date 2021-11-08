@@ -12,11 +12,13 @@
 	"files.insertFinalNewline": false,
 	"files.removeFinalNewlines": true,
 	"files.trimTrailingWhitespace": true,
+	"javascript.preferences.importModuleSpecifier": "non-relative",
+	"javascript.preferences.quoteStyle": "double",
+	"javascript.updateImportsOnFileMove.enabled": "always",
 	"telemetry.telemetryLevel": "off",
 	"terminal.integrated.tabs.hideCondition": "never",
 	"terminal.integrated.tabs.showActiveTerminal": "always",
-	"javascript.preferences.quoteStyle": "double",
-	"javascript.updateImportsOnFileMove.enabled": "always",
+	"typescript.preferences.importModuleSpecifier": "non-relative",
 	"typescript.preferences.quoteStyle": "double",
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"prettier.arrowParens": "avoid",
@@ -35,5 +37,6 @@
 	"prettier.useEditorConfig": false,
 	"prettier.useTabs": true,
 	"prettier.vueIndentScriptAndStyle": true,
-	"prettier.withNodeModules": false
+	"prettier.withNodeModules": false,
+	"security.workspace.trust.untrustedFiles": "open"
 }
