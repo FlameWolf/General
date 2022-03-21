@@ -2,6 +2,44 @@ use("quip-db");
 db.posts.aggregate([
 	{
 		$lookup: {
+			from: "follows",
+			pipeline: [
+				{
+					$match: {
+						followedBy: ObjectId("620bc9f8040b5f4be75f1c42")
+					}
+				},
+				{
+					$group: {
+						_id: undefined,
+						result: {
+							$addToSet: "$user"
+						}
+					}
+				}
+			],
+			as: "following"
+		}
+	},
+	{
+		$addFields: {
+			following: {
+				$arrayElemAt: ["$following.result", 0]
+			}
+		}
+	},
+	{
+		$match: {
+			$expr: {
+				$in: ["$author", "$following"]
+			}
+		}
+	},
+	{
+		$unset: "following"
+	},
+	{
+		$lookup: {
 			from: "mutedwords",
 			pipeline: [
 				{
@@ -98,6 +136,11 @@ db.posts.aggregate([
 		}
 	},
 	{
-		$unset: "mutedWords"
+		$unset: ["mutedWords"]
+	},
+	{
+		$sort: {
+			createdAt: -1
+		}
 	}
 ]);
