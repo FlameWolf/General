@@ -1,1 +1,1 @@
-/\p{L}(\u0D4D\p{L})?\p{M}?|\S|\s/gu
+/\p{L}(\u0D4D\p{L})*\p{M}?|\S|\s/gu
