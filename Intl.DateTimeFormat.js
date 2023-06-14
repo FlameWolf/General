@@ -13,9 +13,8 @@ new Intl.DateTimeFormat
 		second: "2-digit",
 		fractionalSecondDigits: 3,
 		timeZoneName: "short",
-		timeZone: "GMT",
+		timeZone: "UTC",
 		hour12: false,
-		hourCycle: "h23",
 		formatMatcher: "basic"
 	}
 )
