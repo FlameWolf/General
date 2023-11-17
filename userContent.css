@@ -1,21 +1,33 @@
-@-moz-document url("about:newtab"), url("about:home") {
-    .search-wrapper .search-handoff-button,
-    .search-wrapper input,
-    .top-site-outer .tile {
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.25) !important;
-    }
-    .top-site-outer .tile {
-        border-radius: 50% !important;
-    }
-    .top-site-outer .tile .icon-wrapper {
-        width: 100% !important;
-        height: 100% !important;
-        border-radius: 50% !important;
-    }
+@-moz-document url("about:newtab"),
+url("about:home") {
+
+	.search-wrapper .search-handoff-button,
+	.search-wrapper input,
+	.top-site-outer .tile {
+		box-shadow: 0 0 6px rgba(0, 0, 0, 0.25) !important;
+	}
+
+	.top-site-outer .tile {
+		border-radius: 50% !important;
+	}
+
+	.top-site-outer .tile .icon-wrapper {
+		width: 100% !important;
+		height: 100% !important;
+		border-radius: 50% !important;
+	}
 }
 
 @-moz-document url-prefix("about:reader") {
-    body.dark {
-        color: rgb(255, 196, 0) !important;
-    }
+	body.dark {
+		color: rgb(255, 196, 0) !important;
+	}
+}
+
+@-moz-document unobservable-document() {
+	@media (prefers-color-scheme: dark) {
+		.pdfViewer {
+			filter: invert(100%) sepia(100%);
+		}
+	}
 }
