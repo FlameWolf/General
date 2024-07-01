@@ -1,1 +1,1 @@
-/\p{L}(\p{Mc}|\p{Mn}\p{L}*)?|\S|\s/gu
+/\p{L}(\p{Mc}|\p{Mn}\p{L}?)*|\S|\s/gu
