@@ -1,6 +1,6 @@
 new Intl.DateTimeFormat
 (
-	"default", 
+	"default",
 	{
 		weekday: "long",
 		era: "short",
