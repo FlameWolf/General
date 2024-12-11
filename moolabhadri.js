@@ -37,7 +37,7 @@ const charMap = new Map([
 	["വ", "ഹ"],
 	["ള", "ഩ"],
 	["ഴ", "റ"],
-	["റ്റ", "ക്ഷ"],
+	["ക്ഷ", "റ്റ"],
 	["ൿ", "ൾ"],
 	["ൺ", "ൽ"],
 	["ൻ", "ർ"],
@@ -78,56 +78,49 @@ const charMap = new Map([
 	["ഹ", "വ"],
 	["ഩ", "ള"],
 	["റ", "ഴ"],
-	["ക്ഷ", "റ്റ"],
+	["റ്റ", "ക്ഷ"],
 	["ൾ", "ൿ"],
 	["ൽ", "ൺ"],
 	["ർ", "ൻ"]
 ]);
-const vowelMarks = ["ാ", "ി", "ീ", "ു", "ൂ", "ൃ", "ൄ", "ൢ", "ൣ", "െ", "േ", "ൈ", "ൊ", "ോ", "ൗ", "ൌ", "ം", "ഃ"];
-const [ka, meethel, ra, sha, ksha, tta] = ["ക", "്", "റ", "ഷ", "ക്ഷ", "റ്റ"];
+const conjunctsToReplace = ["ക", "കാ", "കി", "കീ", "കു", "കൂ", "കൃ", "കൄ", "കൢ", "കൣ", "കെ", "കേ", "കൈ", "കൊ", "കോ", "കൗ", "കൌ", "കം", "കഃ", "ക്ഷ", "റ്റ"];
 /**
  * @param {string} value
  * @returns {string}
  */
 const swapChar = value => charMap.get(value) || value;
 /**
- * @param {string[]} value
+ * @param {string[]} source
+ * @param {number} index
+ * @param {string[]} target
+ * @returns {boolean}
  */
-const replaceKaConjuncts = value => {
-	let index = value.indexOf(ka);
-	while (index > -1 && index < value.length - 1) {
-		const nextChar = value[index + 1];
-		if (vowelMarks.indexOf(nextChar) > -1) {
-			value[index] = `${ka}${nextChar}`;
-			value.splice(index + 1, 1);
+const hasSubArrayAtIndex = (source, index, target) => {
+	const itemCount = target.length;
+	for (var loopIndex = 0; loopIndex < itemCount; loopIndex++) {
+		if (source[index + loopIndex] !== target[loopIndex]) {
+			return false;
 		}
-		index = value.indexOf(ka, ++index);
 	}
+	return true;
 };
 /**
  * @param {string[]} value
+ * @param {string} conjunct
  */
-const replaceKsha = value => {
-	let index = value.indexOf(ka);
-	while (index > -1 && index < value.length - 2) {
-		if (value[index + 1] === meethel && value[index + 2] === sha) {
-			value[index] = ksha;
-			value.splice(index + 1, 2);
+const replaceConjuncts = (value, conjunct) => {
+	const chars = conjunct.split("");
+	const firstChar = chars[0];
+	const charCount = chars.length;
+	const subArray = chars.slice(1);
+	const spliceCount = charCount - 1;
+	let index = value.indexOf(firstChar);
+	while (index > -1 && index < value.length - charCount) {
+		if (hasSubArrayAtIndex(value, index + 1, subArray)) {
+			value[index] = conjunct;
+			value.splice(index + 1, spliceCount);
 		}
-		index = value.indexOf(ka, ++index);
-	}
-};
-/**
- * @param {string[]} value
- */
-const replaceTta = value => {
-	let index = value.indexOf(ra);
-	while (index > -1 && index < value.length - 2) {
-		if (value[index + 1] === meethel && value[index + 2] === ra) {
-			value[index] = tta;
-			value.splice(index + 1, 2);
-		}
-		index = value.indexOf(ra, ++index);
+		index = value.indexOf(firstChar, ++index);
 	}
 };
 /**
@@ -136,12 +129,10 @@ const replaceTta = value => {
  */
 const encDec = value => {
 	const chars = value.split("");
-	replaceKaConjuncts(chars);
-	if (value.indexOf(ksha) > -1) {
-		replaceKsha(chars);
-	}
-	if (value.indexOf(tta) > -1) {
-		replaceTta(chars);
-	}
+	conjunctsToReplace.forEach(conjunct => {
+		if (value.indexOf(conjunct) > -1) {
+			replaceConjuncts(chars, conjunct);
+		}
+	});
 	return chars.map(swapChar).join("");
 };
