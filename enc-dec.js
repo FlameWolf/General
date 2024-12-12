@@ -21,7 +21,7 @@ const decryptMessage = async (key, ciphertext) => decoder.decode(await crypto.su
 /* Test implementation */
 const textToEncrypt = "മാസങ്ങളിൽ മേടം പ്രധാനം";
 const encryptedText = await encryptMessage(encryptionKey, textToEncrypt);
-const bufferAsString = new Uint8Array(encryptedText).reduce((data, byte) => data + String.fromCodePoint(byte), "");
-const stringAsBuffer = bufferAsString.split("").map(x => x.codePointAt(0));
-const decryptedText = await decryptMessage(encryptionKey, Uint8Array.from(stringAsBuffer));
+const bufferAsString = new Uint8Array(encryptedText).reduce((prev, curr) => `${prev}${String.fromCharCode(curr + 255)}`, "");
+const stringAsBuffer = Uint8Array.from(output.split("").map(x => x.charCodeAt(0) - 255));
+const decryptedText = await decryptMessage(encryptionKey, stringAsBuffer);
 console.log(textToEncrypt === decryptedText ? ":)" : ":(");
