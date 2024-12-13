@@ -1,5 +1,5 @@
 const ENCODING_CHARS = Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32));
-const END_MARKER = String.fromCharCode(31);
+const END_MARKER = String.fromCharCode(160);
 /**
  * Converts a byte array to a base-95 encoded string
  * @param {number[]} input Array of integers between 0 and 255
