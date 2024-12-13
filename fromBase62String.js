@@ -1,10 +1,13 @@
 const fromBase62String = function (value) {
 	const base = 62;
 	const digits = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	const isNegative = value[0] === "-";
-	let result = 0;
-	for (const char of value.slice(isNegative ? 1 : 0)) {
-		result = result * base + digits.indexOf(char);
+	let [result, isNegative] = [0, false];
+	if (value[0] === "-") {
+		isNegative = true;
+		value = value.slice(1);
+	}
+	for (const [index, char] of Array.from(value).reverse().entries()) {
+		result += digits.indexOf(char) * base ** index;
 	}
 	return isNegative ? -result : result;
 };
