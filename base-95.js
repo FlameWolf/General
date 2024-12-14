@@ -1,9 +1,9 @@
 const ENCODING_CHARS = Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32));
 const END_MARKER = String.fromCharCode(160);
 /**
- * Converts a byte array to a base-95 encoded string
+ * Converts a byte array to a base-95 encoded string.
  * @param {number[]} input Array of integers between 0 and 255
- * @returns {string} Base-95 encoded string with zero preservation
+ * @returns {string} The base-95 encoded string with zero preservation
  */
 const base95Encode = input => {
 	if (!(Array.isArray(input) || ArrayBuffer.isView(input)) || input.some(x => !Number.isInteger(x) || x < 0 || x > 255)) {
@@ -31,9 +31,9 @@ const base95Encode = input => {
 	return result.join("");
 };
 /**
- * Converts a base-95 encoded string to a byte array
+ * Converts a base-95 encoded string to a byte array.
  * @param {string} encoded Base-95 encoded string
- * @returns {number[]} Decoded array of bytes
+ * @returns {number[]} The decoded array of bytes
  */
 const base95Decode = encoded => {
 	if (typeof encoded !== "string") {

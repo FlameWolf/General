@@ -1,8 +1,8 @@
 const [encoder, decoder] = [new TextEncoder(), new TextDecoder()];
 /**
- * Flattens a nested Uint8Array
+ * Flattens a nested Uint8Array.
  * @param {Uint8Array} input The Uint8Array to flatten
- * @returns
+ * @returns {Uint8Array} The flattened Uint8Array
  */
 const flattenUint8Array = input => {
 	let result = [];
@@ -16,9 +16,9 @@ const flattenUint8Array = input => {
 	return new Uint8Array(result);
 };
 /**
- * Compresses a Uint8Array using the gzip algorithm
+ * Compresses a Uint8Array using the gzip algorithm.
  * @param {Uint8Array} input The Uint8Array to compress
- * @returns
+ * @returns {Promise<Uint8Array>} A promise that resolves to the compressed Uint8Array
  */
 const gzip = async input => {
 	const cs = new CompressionStream("gzip");
@@ -34,9 +34,9 @@ const gzip = async input => {
 	return flattenUint8Array(chunks);
 };
 /**
- * Uncompresses a Uint8Array using the gzip algorithm
- * @param {Uint8Array} input The Uint8Array to compress
- * @returns
+ * Uncompresses a Uint8Array using the gzip algorithm.
+ * @param {Uint8Array} input The Uint8Array to uncompress
+ * @returns {Promise<Uint8Array>} A promise that resolves to the uncompressed Uint8Array
  */
 const gunzip = async input => {
 	const ds = new DecompressionStream("gzip");
@@ -52,14 +52,14 @@ const gunzip = async input => {
 	return flattenUint8Array(chunks);
 };
 /**
- * Converts a unicode string to base-64
+ * Compresses a unicode string using the gzip algorithm and encodes the result into base-64.
  * @param {string} input The unicode string to convert to base-64
- * @returns
+ * @returns {Promise<string>} A promise that resolves to the converted base-64 string
  */
 const unicodeToBase64 = async input => btoa((await gzip(encoder.encode(input))).reduce((prev, curr) => `${prev}${String.fromCharCode(curr)}`, ""));
 /**
- * Converts a base-64 string to unicode
+ * Converts a gzipped and base-64 encoded string back into its original unicode representation.
  * @param {string} input The base-64 string to convert to unicode
- * @returns
+ * @returns {Promise<string>} A promise that resolves to the converted unicode string
  */
 const base64ToUnicode = async input => decoder.decode(await gunzip(Uint8Array.from(Array.from(atob(input)).map(x => x.charCodeAt(0)))));

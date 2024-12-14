@@ -70,12 +70,17 @@ const charMap = new Map([
 	["ൻ", "ൽ"]
 ]);
 /**
- * @param {string} value
- * @returns {string}
+ * Swaps a character based on the predefined character map.
+ * If the character exists in the map, returns its mapped value;
+ * otherwise, returns the original character.
+ * @param {string} value The input character to be swapped
+ * @returns {string} The mapped character or the original character if no mapping exists
  */
 const swapChar = value => charMap.get(value) || value;
 /**
- * @param {string} value
- * @returns {string}
+ * Performs character encoding/decoding transformation for Malayalam characters.
+ * Converts each character in the input string using the prefedined character map.
+ * @param {string} value The input string to be transformed
+ * @returns {string} The transformed string with character mappings applied
  */
 const encDec = value => value.split("").map(swapChar).join("");
