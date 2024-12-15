@@ -1,17 +1,19 @@
 "use strict";
 
 const charMap = new Map([
-	["ആ", "ഈ"],
-	["ഉ", "എ"],
-	["ഊ", "ഏ"],
+	["ഇ", "ഉ"],
+	["ഈ", "ഊ"],
 	["ഋ", "ഌ"],
 	["ൠ", "ൡ"],
+	["എ", "ഒ"],
+	["ഏ", "ഓ"],
 	["ഐ", "ഔ"],
-	["ാ", "ീ"],
-	["ു", "െ"],
-	["ൂ", "േ"],
+	["ി", "ു"],
+	["ീ", "ൂ"],
 	["ൃ", "ൢ"],
 	["ൄ", "ൣ"],
+	["െ", "ൊ"],
+	["േ", "ോ"],
 	["ൈ", "ൌ"],
 	["ക", "പ"],
 	["ഖ", "ഫ"],
@@ -31,22 +33,28 @@ const charMap = new Map([
 	["യ", "വ"],
 	["ര", "ശ"],
 	["ല", "സ"],
+	["ഺ", "ഩ"],
 	["ൿ", "ൺ"],
+	["ക്‍", "ൺ"],
 	["ൾ", "ർ"],
+	["ള്‍", "ർ"],
 	["ൽ", "ൻ"],
-	["ഈ", "ആ"],
-	["എ", "ഉ"],
-	["ഏ", "ഊ"],
+	["ല്‍", "ൻ"],
+	["ഉ", "ഇ"],
+	["ഊ", "ഈ"],
 	["ഌ", "ഋ"],
 	["ൡ", "ൠ"],
+	["ഒ", "എ"],
+	["ഓ", "ഏ"],
 	["ഔ", "ഐ"],
-	["ീ", "ാ"],
-	["െ", "ു"],
-	["േ", "ൂ"],
+	["ു", "ി"],
+	["ൂ", "ീ"],
 	["ൢ", "ൃ"],
 	["ൣ", "ൄ"],
-	["ൗ", "ൈ"],
+	["ൊ", "െ"],
+	["ോ", "േ"],
 	["ൌ", "ൈ"],
+	["ൗ", "ൈ"],
 	["പ", "ക"],
 	["ഫ", "ഖ"],
 	["ബ", "ഗ"],
@@ -65,10 +73,15 @@ const charMap = new Map([
 	["വ", "യ"],
 	["ശ", "ര"],
 	["സ", "ല"],
+	["ഩ", "ഺ"],
 	["ൺ", "ൿ"],
+	["ണ്‍", "ൿ"],
 	["ർ", "ൾ"],
-	["ൻ", "ൽ"]
+	["ര്‍", "ൾ"],
+	["ൻ", "ൽ"],
+	["ന്‍", "ൽ"]
 ]);
+const conjunctsToReplace = ["ക്‍", "ള്‍", "ല്‍", "ണ്‍", "ര്‍", "ന്‍"];
 /**
  * Swaps a character based on the predefined character map.
  * If the character exists in the map, returns its mapped value;
@@ -78,9 +91,54 @@ const charMap = new Map([
  */
 const swapChar = value => charMap.get(value) || value;
 /**
+ * Checks if a target sub-array exists at a specific index within a source array.
+ * @param {string[]} source The source array to search within
+ * @param {number} index The starting index to begin the sub-array comparison
+ * @param {string[]} target The target sub-array to find
+ * @returns {boolean} True if the entire target sub-array matches at the given index, false otherwise
+ */
+const hasSubArrayAtIndex = (source, index, target) => {
+	const itemCount = target.length;
+	for (var loopIndex = 0; loopIndex < itemCount; loopIndex++) {
+		if (source[index + loopIndex] !== target[loopIndex]) {
+			return false;
+		}
+	}
+	return true;
+};
+/**
+ * Replaces Malayalam conjunct characters within an array of characters.
+ * Finds and replaces specific conjunct patterns in the input character array.
+ * @param {string[]} value The mutable array of characters to modify
+ * @param {string} conjunct The conjunct character pattern to replace
+ */
+const replaceConjuncts = (value, conjunct) => {
+	const chars = conjunct.split("");
+	const firstChar = chars[0];
+	const charCount = chars.length;
+	const subArray = chars.slice(1);
+	const spliceCount = charCount - 1;
+	let index = value.indexOf(firstChar);
+	while (index > -1 && index < value.length - charCount) {
+		if (hasSubArrayAtIndex(value, index + 1, subArray)) {
+			value[index] = conjunct;
+			value.splice(index + 1, spliceCount);
+		}
+		index = value.indexOf(firstChar, ++index);
+	}
+};
+/**
  * Performs character encoding/decoding transformation for Malayalam characters.
  * Converts each character in the input string using the prefedined character map.
  * @param {string} value The input string to be transformed
  * @returns {string} The transformed string with character mappings applied
  */
-const encDec = value => value.split("").map(swapChar).join("");
+const encDec = value => {
+	const chars = value.split("");
+	conjunctsToReplace.forEach(conjunct => {
+		if (value.indexOf(conjunct) > -1) {
+			replaceConjuncts(chars, conjunct);
+		}
+	});
+	return chars.map(swapChar).join("");
+};
