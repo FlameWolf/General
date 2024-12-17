@@ -42,6 +42,7 @@ const charMap = new Map([
 	["ള്‍", "ർ"],
 	["ൽ", "ൻ"],
 	["ല്‍", "ൻ"],
+	["ന്‍റ", "ൽ്ട"],
 	["൦", "൯"],
 	["൧", "൮"],
 	["൨", "൭"],
@@ -106,7 +107,7 @@ const charMap = new Map([
 	["ൻ", "ൽ"],
 	["ന്‍", "ൽ"]
 ]);
-const conjunctsToReplace = ["ക്‍", "ള്‍", "ല്‍", "ണ്‍", "ര്‍", "ന്‍"];
+const conjunctsToReplace = ["ക്‍", "ള്‍", "ല്‍", "ണ്‍", "ര്‍", "ന്‍റ", "ന്‍"];
 /**
  * Swaps a character based on the predefined character map.
  * If the character exists in the map, returns its mapped value;
