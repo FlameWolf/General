@@ -1,5 +1,14 @@
 "use strict";
 
+const similarPairs = [
+	["ന്‍റ", "ൻ്റ"],
+	["ണ്‍", "ൺ"],
+	["ന്‍", "ൻ"],
+	["ര്‍", "ർ"],
+	["ല്‍", "ൽ"],
+	["ള്‍", "ൾ"],
+	["ക്‍", "ൿ"]
+];
 const charMap = new Map([
 	["ഇ", "ഉ"],
 	["ഈ", "ഊ"],
@@ -107,7 +116,6 @@ const charMap = new Map([
 	["ൻ", "ൽ"],
 	["ന്‍", "ൽ"]
 ]);
-const conjunctsToReplace = ["ക്‍", "ള്‍", "ല്‍", "ണ്‍", "ര്‍", "ന്‍റ", "ന്‍"];
 /**
  * Swaps a character based on the predefined character map.
  * If the character exists in the map, returns its mapped value;
@@ -117,54 +125,14 @@ const conjunctsToReplace = ["ക്‍", "ള്‍", "ല്‍", "ണ്‍", 
  */
 const swapChar = value => charMap.get(value) || value;
 /**
- * Checks if a target sub-array exists at a specific index within a source array.
- * @param {string[]} source The source array to search within
- * @param {number} index The starting index to begin the sub-array comparison
- * @param {string[]} target The target sub-array to find
- * @returns {boolean} True if the entire target sub-array matches at the given index, false otherwise
- */
-const hasSubArrayAtIndex = (source, index, target) => {
-	const itemCount = target.length;
-	for (var loopIndex = 0; loopIndex < itemCount; loopIndex++) {
-		if (source[index + loopIndex] !== target[loopIndex]) {
-			return false;
-		}
-	}
-	return true;
-};
-/**
- * Replaces Malayalam conjunct characters within an array of characters.
- * Finds and replaces specific conjunct patterns in the input character array.
- * @param {string[]} value The mutable array of characters to modify
- * @param {string} conjunct The conjunct character pattern to replace
- */
-const replaceConjuncts = (value, conjunct) => {
-	const chars = conjunct.split("");
-	const firstChar = chars[0];
-	const charCount = chars.length;
-	const subArray = chars.slice(1);
-	const spliceCount = charCount - 1;
-	let index = value.indexOf(firstChar);
-	while (index > -1 && index < value.length - charCount) {
-		if (hasSubArrayAtIndex(value, index + 1, subArray)) {
-			value[index] = conjunct;
-			value.splice(index + 1, spliceCount);
-		}
-		index = value.indexOf(firstChar, ++index);
-	}
-};
-/**
  * Performs character encoding/decoding transformation for Malayalam characters.
  * Converts each character in the input string using the prefedined character map.
  * @param {string} value The input string to be transformed
  * @returns {string} The transformed string with character mappings applied
  */
 const encDec = value => {
-	const chars = value.split("");
-	conjunctsToReplace.forEach(conjunct => {
-		if (value.indexOf(conjunct) > -1) {
-			replaceConjuncts(chars, conjunct);
-		}
-	});
-	return chars.map(swapChar).join("");
+	for (const [conjunct, atomic] of similarPairs) {
+		value = value.replaceAll(conjunct, atomic);
+	}
+	return value.split("").map(swapChar).join("");
 };
