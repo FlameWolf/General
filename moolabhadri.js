@@ -164,7 +164,7 @@ const replaceConjuncts = (value, conjunct) => {
 	const subArray = chars.slice(1);
 	const spliceCount = charCount - 1;
 	let index = value.indexOf(firstChar);
-	while (index > -1 && index < value.length - charCount) {
+	while (index > -1 && index <= value.length - charCount) {
 		if (hasSubArrayAtIndex(value, index + 1, subArray)) {
 			value[index] = conjunct;
 			value.splice(index + 1, spliceCount);
