@@ -1,5 +1,14 @@
 "use strict";
 
+const similarPairs = [
+	["ന്‍റ", "ൻ്റ"],
+	["ണ്‍", "ൺ"],
+	["ന്‍", "ൻ"],
+	["ര്‍", "ർ"],
+	["ല്‍", "ൽ"],
+	["ള്‍", "ൾ"],
+	["ക്‍", "ൿ"]
+];
 const charMap = new Map([
 	["അ", "ക"],
 	["ആ", "കാ"],
@@ -46,7 +55,7 @@ const charMap = new Map([
 	["ൖ", "റ്"],
 	["റ്റ", "ഩ"],
 	["ഺ", "ഩ"],
-	["ൻ്റ", "മ്‍ഴ"],
+	["റ്റ്‍", "ൻ"],
 	["൧", "൨"],
 	["൩", "൪"],
 	["൫", "൬"],
@@ -110,7 +119,7 @@ const charMap = new Map([
 	["ഩ", "റ്റ"],
 	["ൻ", "റ്റ്‍"]
 ]);
-const conjunctsToReplace = ["ക", "കാ", "കി", "കീ", "കു", "കൂ", "കൃ", "കൄ", "കൢ", "കൣ", "കെ", "കേ", "കൈ", "കൊ", "കോ", "കൗ", "കൌ", "കം", "കഃ", "ക്ഷ", "റ്റ", "ൻ്റ"];
+const conjunctsToReplace = ["കാ", "കി", "കീ", "കു", "കൂ", "കൃ", "കൄ", "കൢ", "കൣ", "കെ", "കേ", "കൈ", "കൊ", "കോ", "കൗ", "കൌ", "കം", "കഃ", "ക്ഷ", "റ്റ്‍", "റ്റ"];
 /**
  * Swaps a character based on the predefined character map.
  * If the character exists in the map, returns its mapped value;
@@ -163,6 +172,9 @@ const replaceConjuncts = (value, conjunct) => {
  * @returns {string} The transformed string with character mappings applied
  */
 const encDec = value => {
+	for (const [conjunct, atomic] of similarPairs) {
+		value = value.replaceAll(conjunct, atomic);
+	}
 	const chars = value.split("");
 	conjunctsToReplace.forEach(conjunct => {
 		if (value.indexOf(conjunct) > -1) {

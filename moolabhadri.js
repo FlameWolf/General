@@ -1,5 +1,14 @@
 "use strict";
 
+const similarPairs = [
+	["ന്‍റ", "ൻ്റ"],
+	["ണ്‍", "ൺ"],
+	["ന്‍", "ൻ"],
+	["ര്‍", "ർ"],
+	["ല്‍", "ൽ"],
+	["ള്‍", "ൾ"],
+	["ക്‍", "ൿ"]
+];
 const charMap = new Map([
 	["അ", "ക"],
 	["ആ", "കാ"],
@@ -26,6 +35,7 @@ const charMap = new Map([
 	["ഛ", "ഠ"],
 	["ജ", "ഝ"],
 	["ഞ", "ണ"],
+	["ഞ്‍", "ൺ"],
 	["ഡ", "ഢ"],
 	["ത", "പ"],
 	["ഥ", "ഫ"],
@@ -45,12 +55,9 @@ const charMap = new Map([
 	["ണ്ട", "ന്ത"],
 	["മ്പ", "ഩ്ഩ"],
 	["ൻ്റ", "റ്റ"],
-	["ന്‍റ", "റ്റ"],
 	["ഺ", "റ്റ"],
 	["ൻ", "ൽ"],
-	["ന്‍", "ൽ"],
 	["ർ", "ൾ"],
-	["ര്‍", "ൾ"],
 	["ൎ", "ൾ"],
 	["൧", "൨"],
 	["൩", "൪"],
@@ -117,11 +124,9 @@ const charMap = new Map([
 	["ഩ്ഩ", "മ്പ"],
 	["റ്റ", "ൻ്റ"],
 	["ൽ", "ൻ"],
-	["ല്‍", "ൻ"],
-	["ൾ", "ർ"],
-	["ള്‍", "ർ"]
+	["ൾ", "ർ"]
 ]);
-const conjunctsToReplace = ["ക", "കാ", "കി", "കീ", "കു", "കൂ", "കൃ", "കൄ", "കൢ", "കൣ", "കെ", "കേ", "കൈ", "കൊ", "കോ", "കൗ", "കൌ", "കം", "കഃ", "ക്ഷ", "ങ്ക", "ഞ്ച", "ണ്ട", "ന്ത", "മ്പ", "ഩ്ഩ", "ൻ്റ", "ന്‍റ", "റ്റ", "ന്‍", "ല്‍", "ര്‍", "ള്‍"];
+const conjunctsToReplace = ["കാ", "കി", "കീ", "കു", "കൂ", "കൃ", "കൄ", "കൢ", "കൣ", "കെ", "കേ", "കൈ", "കൊ", "കോ", "കൗ", "കൌ", "കം", "കഃ", "ക്ഷ", "ങ്ക", "ഞ്ച", "ണ്ട", "ന്ത", "മ്പ", "ഩ്ഩ", "ൻ്റ", "റ്റ"];
 /**
  * Swaps a character based on the predefined character map.
  * If the character exists in the map, returns its mapped value;
@@ -174,6 +179,9 @@ const replaceConjuncts = (value, conjunct) => {
  * @returns {string} The transformed string with character mappings applied
  */
 const encDec = value => {
+	for (const [conjunct, atomic] of similarPairs) {
+		value = value.replaceAll(conjunct, atomic);
+	}
 	const chars = value.split("");
 	conjunctsToReplace.forEach(conjunct => {
 		if (value.indexOf(conjunct) > -1) {
