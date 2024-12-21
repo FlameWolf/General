@@ -135,15 +135,7 @@ const swapChar = value => charMap.get(value) || value;
  * @param {string[]} target The target sub-array to find
  * @returns {boolean} True if the entire target sub-array matches at the given index, false otherwise
  */
-const hasSubArrayAtIndex = (source, index, target) => {
-	const itemCount = target.length;
-	for (var loopIndex = 0; loopIndex < itemCount; loopIndex++) {
-		if (source[index + loopIndex] !== target[loopIndex]) {
-			return false;
-		}
-	}
-	return true;
-};
+const hasSubArrayAtIndex = (source, index, target) => target.every((char, i) => source[index + i] === char);
 /**
  * Replaces Malayalam conjunct characters within an array of characters.
  * Finds and replaces specific conjunct patterns in the input character array.
