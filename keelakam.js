@@ -134,5 +134,8 @@ const encDec = value => {
 	for (const [conjunct, atomic] of similarPairs) {
 		value = value.replaceAll(conjunct, atomic);
 	}
-	return value.split("").map(swapChar).join("");
+	return value
+		.match(/[\s\S]/gu)
+		.map(swapChar)
+		.join("");
 };
