@@ -29,6 +29,7 @@ const charMap = new Map([
 	["ഔ", "കൌ"],
 	["അം", "കം"],
 	["അഃ", "കഃ"],
+	["അ്‍", "ൿ"],
 	["ഖ", "ഗ"],
 	["ഘ", "ങ"],
 	["ച", "ട"],
@@ -126,7 +127,7 @@ const charMap = new Map([
 	["ൽ", "ൻ"],
 	["ൾ", "ർ"]
 ]);
-const conjunctsToReplace = ["കാ", "കി", "കീ", "കു", "കൂ", "കൃ", "കൄ", "കൢ", "കൣ", "കെ", "കേ", "കൈ", "കൊ", "കോ", "കൗ", "കൌ", "കം", "കഃ", "ക്ഷ", "ങ്ക", "ഞ്ച", "ണ്ട", "ന്ത", "മ്പ", "ഩ്ഩ", "ൻ്റ", "റ്റ"];
+const conjunctsToReplace = ["അ്‍", "കാ", "കി", "കീ", "കു", "കൂ", "കൃ", "കൄ", "കൢ", "കൣ", "കെ", "കേ", "കൈ", "കൊ", "കോ", "കൗ", "കൌ", "കം", "കഃ", "ഞ്‍", "ക്ഷ", "ങ്ക", "ഞ്ച", "ണ്ട", "ന്ത", "മ്പ", "ഩ്ഩ", "ൻ്റ", "റ്റ"];
 /**
  * Swaps a character based on the predefined character map.
  * If the character exists in the map, returns its mapped value;
@@ -150,7 +151,7 @@ const hasSequenceAtIndex = (source, startIndex, sequence) => sequence.every((val
  * @param {string} conjunct The conjunct character pattern to replace
  */
 const replaceConjuncts = (value, conjunct) => {
-	const chars = conjunct.split("");
+	const chars = conjunct.match(/./gu);
 	const firstChar = chars[0];
 	const charCount = chars.length;
 	const subArray = chars.slice(1);
@@ -174,7 +175,7 @@ const encDec = value => {
 	for (const [conjunct, atomic] of similarPairs) {
 		value = value.replaceAll(conjunct, atomic);
 	}
-	const chars = value.split("");
+	const chars = value.match(/[\s\S]/gu);
 	conjunctsToReplace.forEach(conjunct => {
 		if (value.indexOf(conjunct) > -1) {
 			replaceConjuncts(chars, conjunct);
