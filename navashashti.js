@@ -140,21 +140,13 @@ const conjunctsToReplace = ["ട്‍", "റ്‍", "ച്‍"];
  */
 const swapChar = value => charMap.get(value) || value;
 /**
- * Checks if a target sub-array exists at a specific index within a source array.
+ * Checks if a target sequence exists at a specific index within a source array.
  * @param {string[]} source The source array to search within
- * @param {number} index The starting index to begin the sub-array comparison
- * @param {string[]} target The target sub-array to find
- * @returns {boolean} True if the entire target sub-array matches at the given index, false otherwise
+ * @param {number} startIndex The starting index to begin the sequence comparison
+ * @param {string[]} sequence The sequence to find
+ * @returns {boolean} True if the entire sequence matches at the given index, false otherwise
  */
-const hasSubArrayAtIndex = (source, index, target) => {
-	const itemCount = target.length;
-	for (var loopIndex = 0; loopIndex < itemCount; loopIndex++) {
-		if (source[index + loopIndex] !== target[loopIndex]) {
-			return false;
-		}
-	}
-	return true;
-};
+const hasSequenceAtIndex = (source, startIndex, sequence) => sequence.every((value, index) => source[startIndex + index] === value);
 /**
  * Replaces Malayalam conjunct characters within an array of characters.
  * Finds and replaces specific conjunct patterns in the input character array.
@@ -169,7 +161,7 @@ const replaceConjuncts = (value, conjunct) => {
 	const spliceCount = charCount - 1;
 	let index = value.indexOf(firstChar);
 	while (index > -1 && index <= value.length - charCount) {
-		if (hasSubArrayAtIndex(value, index + 1, subArray)) {
+		if (hasSequenceAtIndex(value, index + 1, subArray)) {
 			value[index] = conjunct;
 			value.splice(index + 1, spliceCount);
 		}
