@@ -1,5 +1,11 @@
 "use strict";
 
+/**
+ * Mappings between visually identical Malayalam glyph sequences and their atomic
+ * equivalents. Where first glyph of each pair uses the sequence <base character> +
+ * VIRAMA (്) + ZERO-WIDTH JOINER (ZWJ) to represent a chillu character, the second
+ * glyph uses a single atomic chillu character instead.
+ */
 const similarPairs = [
 	["ന്‍റ", "ൻ്റ"],
 	["മ്‍", "ൔ"],
@@ -12,6 +18,9 @@ const similarPairs = [
 	["ള്‍", "ൾ"],
 	["ക്‍", "ൿ"]
 ];
+/**
+ * Bidirectional Malayalam character substitution mappings.
+ */
 const charMap = new Map([
 	["ഇ", "ഉ"],
 	["ഈ", "ഊ"],
@@ -120,24 +129,24 @@ const charMap = new Map([
 	["ന്‍", "ൽ"]
 ]);
 /**
- * Swaps a character based on the predefined character map.
- * If the character exists in the map, returns its mapped value;
- * otherwise, returns the original character.
- * @param {string} value The input character to be swapped
+ * Swaps a Malayalam character based on the predefined character map.
+ * @param {string} char The input character to be swapped
  * @returns {string} The mapped character or the original character if no mapping exists
  */
-const swapChar = value => charMap.get(value) || value;
+const swapChar = char => charMap.get(char) || char;
 /**
- * Performs character encoding/decoding transformation for Malayalam characters.
- * Converts each character in the input string using the prefedined character map.
- * @param {string} value The input string to be transformed
- * @returns {string} The transformed string with character mappings applied
+ * Transforms Malayalam text by normalising visually identical Malayalam
+ * glyph sequences and substituting characters as per the predefined mappings.
+ * @param {string} inputString The input Malayalam text to be transformed
+ * @returns {string} The transformed text with character substitutions applied
  */
-const encDec = value => {
+const encDec = inputString => {
+	// First pass: Replace similar character pairs
 	for (const [conjunct, atomic] of similarPairs) {
-		value = value.replaceAll(conjunct, atomic);
+		inputString = inputString.replaceAll(conjunct, atomic);
 	}
-	return value
+	// Second pass: Split into individual characters, preserving surrogate pairs, and apply character substitutions
+	return inputString
 		.match(/[\s\S]/gu)
 		.map(swapChar)
 		.join("");

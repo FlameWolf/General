@@ -1,5 +1,11 @@
 "use strict";
 
+/**
+ * Mappings between visually identical Malayalam glyph sequences and their atomic
+ * equivalents. Where first glyph of each pair uses the sequence <base character> +
+ * VIRAMA (്) + ZERO-WIDTH JOINER (ZWJ) to represent a chillu character, the second
+ * glyph uses a single atomic chillu character instead.
+ */
 const similarPairs = [
 	["ന്‍റ", "ൻ്റ"],
 	["മ്‍", "ൔ"],
@@ -12,6 +18,9 @@ const similarPairs = [
 	["ള്‍", "ൾ"],
 	["ക്‍", "ൿ"]
 ];
+/**
+ * Bidirectional Malayalam character substitution mappings.
+ */
 const charMap = new Map([
 	["അ", "ക"],
 	["ആ", "കാ"],
@@ -127,59 +136,61 @@ const charMap = new Map([
 	["ഩ", "റ്റ"],
 	["ൻ", "റ്റ്‍"]
 ]);
+/**
+ * List of Malayalam conjunct characters that need special handling during substitution.
+ */
 const conjunctsToReplace = ["അ്‍", "കാ", "കി", "കീ", "കു", "കൂ", "കൃ", "കൄ", "കൢ", "കൣ", "കെ", "കേ", "കൈ", "കൊ", "കോ", "കൗ", "കൌ", "കം", "കഃ", "ഞ്‍", "സ്‍", "ക്ഷ്‍", "ക്ഷ", "ഷ്‍", "റ്റ്‍", "റ്റ"];
 /**
- * Swaps a character based on the predefined character map.
- * If the character exists in the map, returns its mapped value;
- * otherwise, returns the original character.
- * @param {string} value The input character to be swapped
+ * Swaps a Malayalam character based on the predefined character map.
+ * @param {string} char The input character to be swapped
  * @returns {string} The mapped character or the original character if no mapping exists
  */
-const swapChar = value => charMap.get(value) || value;
+const swapChar = char => charMap.get(char) || char;
 /**
- * Checks if a target sequence exists at a specific index within a source array.
- * @param {string[]} source The source array to search within
- * @param {number} startIndex The starting index to begin the sequence comparison
+ * Validates if a particular sequence exists at a specific index within an array.
+ * @param {string[]} array The array to search within
+ * @param {number} startIndex The starting index for sequence comparison
  * @param {string[]} sequence The sequence to find
- * @returns {boolean} True if the entire sequence matches at the given index, false otherwise
+ * @returns {boolean} True if the sequence matches at the given index
  */
-const hasSequenceAtIndex = (source, startIndex, sequence) => sequence.every((value, index) => source[startIndex + index] === value);
+const hasSequenceAtIndex = (array, startIndex, sequence) => sequence.every((value, index) => array[startIndex + index] === value);
 /**
- * Replaces Malayalam conjunct characters within an array of characters.
- * Finds and replaces specific conjunct patterns in the input character array.
- * @param {string[]} value The mutable array of characters to modify
+ * Finds Malayalam conjunct glyph sequences within an array and unifies them.
+ * @param {string[]} charArray The mutable array of characters to modify
  * @param {string} conjunct The conjunct character pattern to replace
  */
-const replaceConjuncts = (value, conjunct) => {
+const replaceConjuncts = (charArray, conjunct) => {
 	const chars = conjunct.match(/./gu);
 	const firstChar = chars[0];
 	const charCount = chars.length;
 	const subArray = chars.slice(1);
-	const spliceCount = charCount - 1;
-	let index = value.indexOf(firstChar);
-	while (index > -1 && index <= value.length - charCount) {
-		if (hasSequenceAtIndex(value, index + 1, subArray)) {
-			value[index] = conjunct;
-			value.splice(index + 1, spliceCount);
+	let index = charArray.indexOf(firstChar);
+	while (index > -1 && index <= charArray.length - charCount) {
+		if (hasSequenceAtIndex(charArray, index + 1, subArray)) {
+			charArray.splice(index, charCount, conjunct);
 		}
-		index = value.indexOf(firstChar, ++index);
+		index = charArray.indexOf(firstChar, index + 1);
 	}
 };
 /**
- * Performs character encoding/decoding transformation for Malayalam characters.
- * Converts each character in the input string using the prefedined character map.
- * @param {string} value The input string to be transformed
- * @returns {string} The transformed string with character mappings applied
+ * Transforms Malayalam text by normalising visually identical Malayalam
+ * glyph sequences and substituting characters as per the predefined mappings.
+ * @param {string} inputString The input Malayalam text to be transformed
+ * @returns {string} The transformed text with character substitutions applied
  */
-const encDec = value => {
+const encDec = inputString => {
+	// First pass: Replace similar character pairs
 	for (const [conjunct, atomic] of similarPairs) {
-		value = value.replaceAll(conjunct, atomic);
+		inputString = inputString.replaceAll(conjunct, atomic);
 	}
-	const chars = value.match(/[\s\S]/gu);
+	// Split into individual characters while preserving surrogate pairs
+	const chars = inputString.match(/[\s\S]/gu);
+	// Second pass: Unify conjunct sequences
 	conjunctsToReplace.forEach(conjunct => {
-		if (value.indexOf(conjunct) > -1) {
+		if (inputString.includes(conjunct)) {
 			replaceConjuncts(chars, conjunct);
 		}
 	});
+	// Final pass: Apply character substitutions
 	return chars.map(swapChar).join("");
 };
