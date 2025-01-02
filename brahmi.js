@@ -209,41 +209,23 @@ const charMap = new Map([
 	["𑀓𑁰", "ൿ"]
 ]);
 /**
- * List of Brahmi conjunct characters that need special handling during substitution.
+ * Multi-character Brahmi sequences from the predefined character map,
+ * sorted by decreasing order of length for proper matching precedence.
  */
-const conjunctsToReplace = ["𑀫𑁰", "𑀬𑁰", "𑀵𑁰", "𑀡𑁰", "𑀷𑁰", "𑀭𑁰", "𑀮𑁰", "𑀴𑁰", "𑀓𑁰"];
+const mappedConjuncts = Array.from(charMap.keys())
+	.filter(x => x.match(/./gu).length > 1)
+	.sort((x, y) => x.length < y.length);
+/**
+ * Regular expression pattern for splitting Malayalam text
+ * into tokens while preserving multi-character sequences.
+ */
+const tokenisationPattern = new RegExp(`(${mappedConjuncts.join("|")}|\\s|\\S)`, "gu");
 /**
  * Swaps a Malayalam/Brahmi character based on the predefined character map.
  * @param {string} char The input character to be swapped
  * @returns {string} The mapped character or the original character if no mapping exists
  */
 const swapChar = char => charMap.get(char) || char;
-/**
- * Validates if a particular sequence exists at a specific index within an array.
- * @param {string[]} array The array to search within
- * @param {number} startIndex The starting index for sequence comparison
- * @param {string[]} sequence The sequence to find
- * @returns {boolean} True if the sequence matches at the given index
- */
-const hasSequenceAtIndex = (array, startIndex, sequence) => sequence.every((value, index) => array[startIndex + index] === value);
-/**
- * Finds Brahmi conjunct glyph sequences within an array and unifies them.
- * @param {string[]} charArray The mutable array of characters to modify
- * @param {string} conjunct The conjunct character pattern to replace
- */
-const replaceConjuncts = (charArray, conjunct) => {
-	const chars = conjunct.match(/./gu);
-	const firstChar = chars[0];
-	const charCount = chars.length;
-	const subArray = chars.slice(1);
-	let index = charArray.indexOf(firstChar);
-	while (index > -1 && index <= charArray.length - charCount) {
-		if (hasSequenceAtIndex(charArray, index + 1, subArray)) {
-			charArray.splice(index, charCount, conjunct);
-		}
-		index = charArray.indexOf(firstChar, index + 1);
-	}
-};
 /**
  * Transforms Malayalam/Brahmi text by normalising visually identical Malayalam
  * glyph sequences and substituting characters as per the predefined mappings.
@@ -255,14 +237,8 @@ const encDec = inputString => {
 	for (const [conjunct, atomic] of similarPairs) {
 		inputString = inputString.replaceAll(conjunct, atomic);
 	}
-	// Split into individual characters while preserving surrogate pairs
-	const chars = inputString.match(/[\s\S]/gu);
-	// Second pass: Unify conjunct sequences
-	conjunctsToReplace.forEach(conjunct => {
-		if (inputString.includes(conjunct)) {
-			replaceConjuncts(chars, conjunct);
-		}
-	});
-	// Final pass: Apply character substitutions
+	// Split text into tokens while preserving surrogate pairs and conjuncts
+	const chars = inputString.match(tokenisationPattern);
+	// Second pass: Apply character substitutions
 	return chars.map(swapChar).join("");
 };
